@@ -237,3 +237,55 @@ enum film_rating {
   R
   NC_17 @map("NC-17")
 }
+
+model view {
+  id           Int                @id @default(autoincrement())
+  sort         sort_order         @default(asc)
+  sortby       sort_by            @default(title)
+  category     film_category_list
+  language     lang_list
+  release_year Int                @default(2006)
+  min_length   Int                @default(0)
+  max_length   Int                @default(9999)
+}
+
+enum sort_order {
+  asc
+  desc
+}
+
+enum sort_by {
+  title
+  release_year
+  language
+  length
+  rating
+}
+
+enum film_category_list {
+  Action
+  Animation
+  Children
+  Classics
+  Comedy
+  Documentary
+  Drama
+  Family
+  Foreign
+  Games
+  Horror
+  Music
+  New
+  Sci_Fi      @map("Sci-Fi")
+  Sports
+  Travel
+}
+
+enum lang_list {
+  English
+  Italian
+  Japanese
+  Mandarin
+  French
+  German
+}

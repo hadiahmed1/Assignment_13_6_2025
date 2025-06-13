@@ -10,6 +10,7 @@
 import prisma from "../config/prisma.config";
 import asyncHandler from "../helper/asyncHandler";
 import { Request, Response } from "express";
+import ApiResponse from "../helper/ApiResponse"
 
 // • List - list all the films with title, release year, language, length, replacement cost and rating.
 // • Sort - sort the columns title, release year, language, length and
@@ -17,17 +18,11 @@ import { Request, Response } from "express";
 // • Filter -filter films by category, language, release year, length
 // (greater than, less than, equal to) and actor. Multiple filter conditions should work in
 // AND mode.
-type FilmSort = {
-    title?: 'asc' | 'desc';
-    release_year?: 'asc' | 'desc';
-    language?: 'asc' | 'desc';
-    length?: 'asc' | 'desc';
-    rating?: 'asc' | 'desc';
-};
+
 type searchFilter = {
-    page: number;
-    sort: FilmSort;
-    category: string[];
+    sortby: "title" | "release_year" | "language" | "length" | "rating"
+    sort: 'asc' | 'desc';
+    category: string;
     language: string;
     release_year: number;
     min_length: number;
@@ -36,7 +31,8 @@ type searchFilter = {
 
 export const getFilms = asyncHandler(async (req: Request, res: Response) => {
     const LIMIT = 10;
-    const { page = 1, sort = { title: 'asc' }, category, language, release_year, min_length = 0, max_length }: searchFilter = req.body;
+    const { page } = req.params || 1;
+    const { sort, sortby, category, language, release_year, min_length = 0, max_length }: searchFilter = req.body;
     const films = await prisma.film.findMany({
         where: {
             AND: [
@@ -51,11 +47,12 @@ export const getFilms = asyncHandler(async (req: Request, res: Response) => {
                     },
                 } : {},
                 release_year ? { release_year: release_year } : {},
-                min_length ? { length: { gte: min_length } } : {},
-                max_length ? { length: { lte: max_length } } : {},
-            ],
+                min_length ? { length: { gte: Number(min_length) } } : {},
+                max_length ? { length: { lte: Number(max_length) } } : {},
+            ]
         },
         select: {
+            film_id: true,
             title: true,
             release_year: true,
             length: true,
@@ -68,22 +65,57 @@ export const getFilms = asyncHandler(async (req: Request, res: Response) => {
             },
         },
         orderBy: [
-            sort.title ? { title: sort.title } : {},
-            sort.release_year ? { release_year: sort.release_year } : {},
-            sort.language
+            sortby === 'title' ? { title: sort } : {},
+            sortby === 'release_year' ? { release_year: sort } : {},
+            sortby === 'language'
                 ? {
                     language_film_language_idTolanguage: {
-                        name: sort.language,
+                        name: sort,
                     },
                 }
                 : {},
-            sort.length ? { length: sort.length } : {},
-            sort.rating ? { rating: sort.rating } : {},
+            sortby === 'length' ? { length: sort } : {},
+            sortby === 'rating' ? { rating: sort } : {},
         ],
-        skip: (page - 1) * LIMIT,
+        skip: (Number(page) - 1) * LIMIT,
         take: LIMIT
     });
-    return res.send(films)
-})
+    return res.send(new ApiResponse("Films fetched successfully", 200, { films }))
+});
+
+export const getFilmDetails = asyncHandler(async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const film = await prisma.film.findFirst({
+        where: { film_id: Number(id) },
+        select: {
+            film_id: true,
+            title: true,
+            release_year: true,
+            length: true,
+            replacement_cost: true,
+            rating: true,
+            description: true,
+            film_actor: {
+                select: {
+                    actor: true,
+                }
+            },
+            film_category: {
+                select: {
+                    category: true
+                }
+            },
+            rental_rate: true,
+            inventory: true,
+            language_film_language_idTolanguage: {
+                select: {
+                    name: true,
+                },
+            },
+        },
+    });
+
+    return res.json(new ApiResponse(film?.title || "", 200, { film }))
+});
 
 
