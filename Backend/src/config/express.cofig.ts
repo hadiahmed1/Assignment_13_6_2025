@@ -4,13 +4,14 @@ import { getFilmDetails, getFilms } from "../controllers/film.controller";
 import { getStoreDetails, getStores } from "../controllers/store.controller";
 import cors from "cors"
 import prisma from "./prisma.config";
+import { addView } from "../controllers/view.controller";
 const port = process.env.PORT || 3000;
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
-  origin: 'http://localhost:5173',
+    origin: 'http://localhost:5173',
 }));
 //---------routes------------------
 app.get('/', asyncHadnler(
@@ -19,11 +20,11 @@ app.get('/', asyncHadnler(
     })
 );
 
-app.post('/films/:page',getFilms);
-app.get('/film/:id',getFilmDetails);
-app.get('/stores',getStores);
-app.get('/stores/:id',getStoreDetails);
-
+app.post('/films/:page', getFilms);
+app.get('/film/:id', getFilmDetails);
+app.get('/stores', getStores);
+app.get('/stores/:id', getStoreDetails);
+app.post('/view', addView);
 //----------------------------------
 
 

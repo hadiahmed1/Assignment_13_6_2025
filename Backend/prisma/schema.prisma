@@ -238,6 +238,7 @@ enum film_rating {
   NC_17 @map("NC-17")
 }
 
+
 model view {
   id           Int                @id @default(autoincrement())
   sort         sort_order         @default(asc)
