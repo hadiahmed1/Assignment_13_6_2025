@@ -1,1 +1,2 @@
-console.log("hello backend");
+import 'dotenv/config'
+import './src/config/expressCofig'
