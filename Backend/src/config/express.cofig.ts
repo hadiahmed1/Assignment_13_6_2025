@@ -1,6 +1,6 @@
 import express from "express";
-import ApiError from "../helper/ApiError";
 import asyncHadnler from "../helper/asyncHandler";
+import { getFilms } from "../controllers/film.controller";
 
 const port = process.env.PORT || 3000;
 
@@ -15,6 +15,7 @@ app.get('/', asyncHadnler(
     })
 );
 
+app.get('/film',getFilms)
 
 
 
