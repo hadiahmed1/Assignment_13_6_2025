@@ -1,2 +1,2 @@
 import 'dotenv/config'
-import './src/config/expressCofig'
+import './src/config/express.cofig'
