@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Drawer, TextField, Autocomplete, FormControlLabel, Checkbox, Tooltip, Popover, MenuItem } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -6,63 +6,68 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import MoreVertIcon from '@mui/icons-material/MoreVert'
-
-const rows = [
-  {
-    name: 'Test 1',
-    created_date: '18-04-2025',
-    created_by: ['Shiv Roy', 'Amitabh Roy'],
-    status: 'Active',
-  },
-  {
-    name: 'Test 2',
-    created_date: '19-04-2025',
-    created_by: ['Rohit Sharma', 'Karan Mehta'],
-    status: 'Rejected',
-  },
-  {
-    name: 'Test 3',
-    created_date: '20-04-2025',
-    created_by: ['Amitabh Roy', 'Rohit Sharma'],
-    status: 'On Hold',
-  },
-  {
-    name: 'Test 4',
-    created_date: '21-04-2025',
-    created_by: ['Shiv Roy', 'Karan Mehta'],
-    status: 'Active',
-  },
-  {
-    name: 'Test 5',
-    created_date: '22-04-2025',
-    created_by: ['Amitabh Roy', 'Rohit Sharma', 'Shiv Roy'],
-    status: 'Active',
-  },
-  {
-    name: 'Test 6',
-    created_date: '23-04-2025',
-    created_by: ['Neha Sharma'],
-    status: 'Rejected',
-  },
-  {
-    name: 'Test 7',
-    created_date: '24-04-2025',
-    created_by: ['Karan Mehta', 'Shukla Roy'],
-    status: 'On Hold',
-  },
-  {
-    name: 'Test 8',
-    created_date: '25-04-2025',
-    created_by: ['Amitabh Roy', 'Rohit Sharma'],
-    status: 'Active',
-  },
-];
+import axiosInstance from './axiosInstance';
+import FilterForm from './component/FilterForm';
+import { useNavigate } from 'react-router-dom';
 
 export default function UserTable() {
   const [open, setOpen] = useState(false);
   const [openFilter, setOpenFilter] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedRowIndex, setSelectedRowIndex] = useState(null);
+
+  const [films, setFilms] = useState([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [filter, setFilter] = useState({
+    sort: "desc",
+    sortby: "length",
+    category: "Comedy",
+    language: "English",
+    min_length: 0,
+    max_length: 160
+  })
+  const observer = useRef(null);
+
+  const navigate= useNavigate();
+  const lastFilmRef = useCallback(
+    (node) => {
+      if (loading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting && hasMore) {
+          setPage(prev => prev + 1);
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [loading, hasMore]
+  );
+
+  const getFilms = async (currentPage) => {
+    setLoading(true);
+    try {
+      const data = filter;
+      const res = await axiosInstance.post(`/films/${currentPage}`, data);
+      console.log(res.data.data);
+
+      const newFilms = res.data.data.films;
+      if (newFilms.length < 10) setHasMore(false);
+      if (currentPage === 1)
+        setFilms(newFilms);
+      else
+        setFilms(prev => [...prev, ...newFilms]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    console.log("effect")
+    getFilms(page);
+  }, [page, filter]);
+
 
   const toggleDrawer = (state) => () => {
     setOpen(state);
@@ -119,64 +124,17 @@ export default function UserTable() {
   return (
     <>
       <div className='heading_holder'>
-        <h4 className='heading'>Table Lists</h4>
+        <h4 className='heading'>Films</h4>
         <div className='btn_holder'>
           <Button className='cstm_btn' variant="outlined" onClick={toggleFilter(!openFilter)}>
             {!openFilter ? 'Filter' : 'Hide'}
           </Button>
-          <Button className='cstm_btn' variant="contained" onClick={toggleDrawer(true)}>Create</Button>
         </div>
       </div>
 
       {/* filter result form */}
       {openFilter && <div className='filtered_form_holder'>
-        <div className='each_input_holder'>
-          <TextField
-            id="outlined-password-input"
-            className='cstm_textfield'
-            label="Name"
-            type="text"
-            size="small"
-            sx={{
-              '& .MuiInputLabel-root': {
-                fontSize: '0.75rem'
-              },
-              '& .MuiInputLabel-shrink': {
-                transform: 'translate(14px, -9px) scale(1)',
-                fontSize: '0.75rem'
-              }
-            }}
-          />
-        </div>
-
-        <div className='each_input_holder'>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
-              label="Select Date"
-              value={createdDateValue}
-              onChange={(newValue) => setCreatedDateValue(newValue)}
-              slotProps={{
-                textField: {
-                  fullWidth: true,
-                  size: 'small',
-                  sx: {
-                    '& .MuiInputBase-root': {
-                      height: 40,
-                    },
-                    '& .MuiInputAdornment-root .MuiIconButton-root': {
-                      padding: '4px', 
-                      height: 'auto',
-                      width: 'auto',
-                    },
-                    '& .MuiSvgIcon-root': {
-                      fontSize: '20px',
-                    }
-                  },
-                }
-              }}
-            />
-          </LocalizationProvider>
-        </div>
+        <FilterForm setFilter={setFilter} setPage={setPage} />
       </div>}
 
       {/* table data */}
@@ -184,11 +142,11 @@ export default function UserTable() {
         <Table size='small'>
           <TableHead>
             <TableRow>
-              <TableCell><strong>Name</strong></TableCell>
-              <TableCell><strong>Created Date</strong></TableCell>
-              <TableCell><strong>Created By</strong></TableCell>
-              <TableCell><strong>Status</strong></TableCell>
-              <TableCell 
+              <TableCell><strong>Title</strong></TableCell>
+              <TableCell><strong> ReleaseYear</strong></TableCell>
+              <TableCell><strong>Length</strong></TableCell>
+              <TableCell><strong>Rating</strong></TableCell>
+              <TableCell
                 sx={{
                   width: '50px',
                   minWidth: '50px',
@@ -199,27 +157,19 @@ export default function UserTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row, index) => (
-              <TableRow 
+            {films.map((row, index) => (
+
+              <TableRow ref={(index === films.length - 1) ? lastFilmRef : null}
                 key={index}
                 sx={{
                   backgroundColor: index % 2 === 0 ? 'rgba(0 ,0, 0, 0.04)' : 'white'
                 }}
               >
-                <TableCell>{row.name}</TableCell>
-                <TableCell>{row.created_date}</TableCell>
+                <TableCell className='underline text-blue-600 hover:cursor-pointer'>{row.title}</TableCell>
+                <TableCell>{row.release_year}</TableCell>
+                <TableCell>{row.length + "min"}</TableCell>
                 <TableCell>
-                  <div className='users_outer_holder'>
-                    {row.created_by.map((eachUser, index) => (
-                      <Tooltip title={eachUser} key={index} className='each_user_initials_holder'>
-                        {eachUser.split(' ').map(word => word[0]).join('')}
-                      </Tooltip>
-                    ))}
-                    <span>+ 4 more</span>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className={`cstm_badge_holder ${row.status === 'Active' ? 'active' : row.status === 'Rejected' ? 'rejected' : 'on_hold'}`}>{row.status}</div>
+                  <div className={`cstm_badge_holder ${row.rating === 'PG' ? 'active' : row.rating === 'R' ? 'rejected' : 'on_hold'}`}>{row.rating}</div>
                 </TableCell>
                 <TableCell
                   sx={{
@@ -248,7 +198,7 @@ export default function UserTable() {
                       horizontal: 'left',
                     }}
                   >
-                    <MenuItem 
+                    <MenuItem
                       onClick={handleEdit}
                       sx={{
                         fontSize: '12px',
@@ -262,7 +212,7 @@ export default function UserTable() {
                     >
                       Edit
                     </MenuItem>
-                    <MenuItem 
+                    <MenuItem
                       onClick={handleDelete}
                       sx={{
                         fontSize: '12px',
@@ -285,9 +235,9 @@ export default function UserTable() {
       </TableContainer>
 
       {/* create list form */}
-      <Drawer 
-        anchor="right" 
-        open={open} 
+      <Drawer
+        anchor="right"
+        open={open}
         onClose={toggleDrawer(false)}
         slotProps={{
           paper: {
@@ -301,7 +251,7 @@ export default function UserTable() {
           <div className='heading_holder'>
             <h4 className='heading'>Create New</h4>
             <span className='close_holder' onClick={toggleDrawer(false)}>
-              <HighlightOffIcon/>
+              <HighlightOffIcon />
             </span>
           </div>
           <div className='content_holder'>
@@ -339,7 +289,7 @@ export default function UserTable() {
                           height: 40,
                         },
                         '& .MuiInputAdornment-root .MuiIconButton-root': {
-                          padding: '4px', 
+                          padding: '4px',
                           height: 'auto',
                           width: 'auto',
                         },
