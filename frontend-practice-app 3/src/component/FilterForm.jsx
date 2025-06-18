@@ -11,19 +11,19 @@ const FilterForm=memo( function FilterForm({ setFilter, setPage }) {
     console.log(errors);
 
     return (
-        <form action="#" onSubmit={handleSubmit(onSubmit)}>
-            <select {...register("sortby")}>
+        <form className='flex' action="#" onSubmit={handleSubmit(onSubmit)}>
+            <select className='p-1' {...register("sortby")}>
                 <option value="title">title</option>
                 <option value="release_year">release_year</option>
                 <option value="language">language</option>
                 <option value="length">length</option>
                 <option value="rating">rating</option>
             </select>
-            <select {...register("sort")}>
+            <select className='p-1' {...register("sort")}>
                 <option value="asc">asc</option>
                 <option value="desc">desc</option>
             </select>
-            <select {...register("category")}>
+            <select className='p-1' {...register("category")}>
                 <option value="Action">Action</option>
                 <option value="Animation">Animation</option>
                 <option value="Children">Children</option>
@@ -41,7 +41,7 @@ const FilterForm=memo( function FilterForm({ setFilter, setPage }) {
                 <option value="Sports">Sports</option>
                 <option value="Travel">Travel</option>
             </select>
-            <select {...register("language")}>
+            <select className='p-1' {...register("language")}>
                 <option value="English">English</option>
                 <option value="Italian">Italian</option>
                 <option value="Japanese">Japanese</option>
@@ -49,10 +49,10 @@ const FilterForm=memo( function FilterForm({ setFilter, setPage }) {
                 <option value="French">French</option>
                 <option value="German">German</option>
             </select>
-            <input type="number" placeholder="min_length" {...register("min_length", { min: 0 })} />
-            <input type="number" placeholder="max_length" {...register("max_length", { min: 0 })} />
+            <input className='p-1' type="number" placeholder="min_length" {...register("min_length", { min: 0 })} />
+            <input className='p-1' type="number" placeholder="max_length" {...register("max_length", { min: 0 })} />
 
-            <input type="submit" />
+            <input className='bg-cyan-500 px-3 py-1 rounded-r-md hover:cursor-pointer' type="submit" />
         </form>
     );
 })

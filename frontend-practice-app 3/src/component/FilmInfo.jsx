@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom"
 import axiosInstance from "../axiosInstance";
 
-const FilmInfo = () => {
-    const params = useParams();
-    const id = Number(params.id) || 1;
+const FilmInfo = ({id}) => {
     const [film, setFilm] = useState(null);
     useEffect(() => {
         console.log("effect")

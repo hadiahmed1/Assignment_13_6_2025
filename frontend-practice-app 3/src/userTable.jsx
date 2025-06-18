@@ -9,9 +9,11 @@ import MoreVertIcon from '@mui/icons-material/MoreVert'
 import axiosInstance from './axiosInstance';
 import FilterForm from './component/FilterForm';
 import { useNavigate } from 'react-router-dom';
+import FilmInfo from './component/FilmInfo';
 
 export default function UserTable() {
   const [open, setOpen] = useState(false);
+  const [filmId, setFilmID] = useState(0);
   const [openFilter, setOpenFilter] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedRowIndex, setSelectedRowIndex] = useState(null);
@@ -30,7 +32,7 @@ export default function UserTable() {
   })
   const observer = useRef(null);
 
-  const navigate= useNavigate();
+  const navigate = useNavigate();
   const lastFilmRef = useCallback(
     (node) => {
       if (loading) return;
@@ -165,7 +167,7 @@ export default function UserTable() {
                   backgroundColor: index % 2 === 0 ? 'rgba(0 ,0, 0, 0.04)' : 'white'
                 }}
               >
-                <TableCell className='underline text-blue-600 hover:cursor-pointer'>{row.title}</TableCell>
+                <TableCell onClick={() => { setOpen(true); setFilmID(row.film_id) }} className='underline text-blue-600 hover:cursor-pointer'>{row.title}</TableCell>
                 <TableCell>{row.release_year}</TableCell>
                 <TableCell>{row.length + "min"}</TableCell>
                 <TableCell>
@@ -236,6 +238,7 @@ export default function UserTable() {
 
       {/* create list form */}
       <Drawer
+        className='p-4'
         anchor="right"
         open={open}
         onClose={toggleDrawer(false)}
@@ -254,6 +257,7 @@ export default function UserTable() {
               <HighlightOffIcon />
             </span>
           </div>
+          <FilmInfo id={filmId} />
           <div className='content_holder'>
             <div className='each_input_holder'>
               <TextField

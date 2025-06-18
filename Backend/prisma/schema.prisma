@@ -230,6 +230,17 @@ model store {
   @@index([address_id], map: "idx_fk_address_id")
 }
 
+model view {
+  id           Int           @id @default(autoincrement())
+  sort         view_sort     @default(asc)
+  sortby       view_sortby   @default(title)
+  category     view_category
+  language     view_language
+  release_year Int           @default(2006)
+  min_length   Int           @default(0)
+  max_length   Int           @default(9999)
+}
+
 enum film_rating {
   G
   PG
@@ -238,24 +249,12 @@ enum film_rating {
   NC_17 @map("NC-17")
 }
 
-
-model view {
-  id           Int                @id @default(autoincrement())
-  sort         sort_order         @default(asc)
-  sortby       sort_by            @default(title)
-  category     film_category_list
-  language     lang_list
-  release_year Int                @default(2006)
-  min_length   Int                @default(0)
-  max_length   Int                @default(9999)
-}
-
-enum sort_order {
+enum view_sort {
   asc
   desc
 }
 
-enum sort_by {
+enum view_sortby {
   title
   release_year
   language
@@ -263,7 +262,7 @@ enum sort_by {
   rating
 }
 
-enum film_category_list {
+enum view_category {
   Action
   Animation
   Children
@@ -282,7 +281,7 @@ enum film_category_list {
   Travel
 }
 
-enum lang_list {
+enum view_language {
   English
   Italian
   Japanese
