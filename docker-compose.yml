@@ -17,6 +17,13 @@ services:
       - sakila-db
     env_file:
       - .env
+  frontend:
+    build: ./Frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+
 
 
 volumes:
