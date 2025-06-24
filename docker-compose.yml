@@ -1,0 +1,14 @@
+services:
+  sakila-db:
+    build: ./sakila-db
+    container_name: sakila-db
+    restart: always
+    ports:
+      - "3306:3306"
+    env_file:
+      - .env
+    volumes:
+      - sakila-db-data:/var/lib/mysql
+
+volumes:
+  sakila-db-data:
