@@ -8,7 +8,6 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import axiosInstance from './axiosInstance';
 import FilterForm from './component/FilterForm';
-import { useNavigate } from 'react-router-dom';
 import FilmInfo from './component/FilmInfo';
 
 export default function UserTable() {
@@ -32,7 +31,6 @@ export default function UserTable() {
   })
   const observer = useRef(null);
 
-  const navigate = useNavigate();
   const lastFilmRef = useCallback(
     (node) => {
       if (loading) return;

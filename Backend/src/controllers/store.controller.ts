@@ -3,23 +3,6 @@ import ApiResponse from "../helper/ApiResponse";
 import asyncHandler from "../helper/asyncHandler";
 import { Request, Response } from "express";
 
-
-// List - List the stores. store id, store manager, address and number of times movies
-// has been rented from the store and the staff count. On clicking the number of times
-// rented, it should open a right panel and should show the all the rentals with
-// pagination. On clicking the staff count, it should open a right panel and should show
-// all the staffs with pagination.
-
-// • Sort – I should be able to sort the stores alphabetically, staff count, rental count.
-// • Filter - I should be able to filter a store by city, zip code, staff count (greater than, less
-// than, equal to). Multiple filter conditions should work in AND mode.
-
-// • Store details – On Clicking the store id, a right panel should open which should have
-// 3 tabs. The 
-// -store details (manager, address etc). The
-// -list of staff in the store.
-// -rentals from that store.
-
 type StoreSort = {
     id?: 'asc' | 'desc';
     staff_count?: 'asc' | 'desc';
