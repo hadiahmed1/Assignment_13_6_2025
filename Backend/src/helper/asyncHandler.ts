@@ -1,6 +1,10 @@
 import { Request, Response, NextFunction } from "express";
-
-const asyncHandler = (fn) =>
+type Controller = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => Promise<Response | void | string>;
+const asyncHandler = (fn: Controller) =>
     (req: Request, res: Response, next: NextFunction) => {
         Promise.resolve(fn(req, res, next))
             .catch(error => {
