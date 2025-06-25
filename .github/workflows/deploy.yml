@@ -19,12 +19,20 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_KEY }}
           script: |
+            echo "🔁 STEP 1: Cleaning up previous deployment..."
             rm -rf Assignment
+            echo "📦 STEP 2: Cloning the repository..."
             git clone https://github.com/hadiahmed1/Assignment_13_6_2025.git
+            echo "📂 STEP 3: Navigating into the project directory..."
             cd Assignment
+            echo "📁 STEP 4: Ensuring Backend directory exists..."
             mkdir -p Backend
+            echo "🔐 STEP 5: Creating environment files..."
             echo "${{ secrets.ROOT_ENV }}" > .env
             echo "${{ secrets.BACKEND_ENV }}" > Backend/.env
             echo "${{ secrets.FRONTEND_ENV }}" > Frontend/.env
+            echo "🛑 STEP 6: Stopping any running containers..."
             docker compose down
+            echo "🚀 STEP 7: Building and starting containers..."
             docker compose up -d --build
+            echo "✅ Deployment finished successfully."
