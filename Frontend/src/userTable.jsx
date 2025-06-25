@@ -81,10 +81,10 @@ export default function UserTable() {
 
   const options = ['Rohit Sharma', 'Karan Mehta', 'Shiv Roy', 'Amitabh Roy'];
 
-  const handlePopoverOpen = (event, index) => {
-    setAnchorEl(event.currentTarget);
-    setSelectedRowIndex(index);
-  };
+  // const handlePopoverOpen = (event, index) => {
+  //   setAnchorEl(event.currentTarget);
+  //   setSelectedRowIndex(index);
+  // };
 
   const handlePopoverClose = () => {
     setAnchorEl(null);
@@ -162,9 +162,9 @@ export default function UserTable() {
                     textAlign: 'center',
                   }}
                 >
-                  <span className='icon_holder' onClick={(e) => handlePopoverOpen(e, index)}>
+                  {/* <span className='icon_holder' onClick={(e) => handlePopoverOpen(e, index)}>
                     <MoreVertIcon />
-                  </span>
+                  </span> */}
 
                   <Popover
                     id="long-menu"
