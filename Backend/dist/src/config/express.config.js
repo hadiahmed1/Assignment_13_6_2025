@@ -14,7 +14,7 @@ app.use(cors({
 }));
 //---------routes------------------
 app.get('/', asyncHadnler(async (_req, res) => {
-    res.send('Hello World!');
+    res.send('Hello CICD!');
 }));
 app.post('/films/:page', getFilms);
 app.get('/film/:id', getFilmDetails);
