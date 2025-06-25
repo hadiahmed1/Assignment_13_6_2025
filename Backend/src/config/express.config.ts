@@ -16,7 +16,7 @@ app.use(cors({
 //---------routes------------------
 app.get('/', asyncHadnler(
     async (_req: Request, res: Response) => {
-        res.send('Hello World!')
+        res.send('Hello CICD!')
     })
 );
 
