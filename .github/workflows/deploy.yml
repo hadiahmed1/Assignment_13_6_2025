@@ -20,7 +20,7 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           script: |
             rm -rf Assignment
-            git clone https://github.com/<your-username>/<your-repo>.git Assignment
+            git clone https://github.com/hadiahmed1/Assignment_13_6_2025.git
             cd Assignment
             mkdir -p Backend
             echo "${{ secrets.ROOT_ENV }}" > .env
