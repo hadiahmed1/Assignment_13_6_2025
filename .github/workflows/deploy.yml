@@ -1,4 +1,4 @@
-name: Deploy to EC2
+name: 🚀 Deploy to EC2 instance via SSH
 
 on:
   push:
@@ -6,33 +6,41 @@ on:
 
 jobs:
   deploy:
+    name: 🔧 Deploy to EC2
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: 🛎️ Checkout repository
         uses: actions/checkout@v3
 
-      - name: Deploy to EC2
+      - name: 🚀 Deploy via SSH
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
+          username: ${{ secrets.EC2_USER }}       # usually 'ubuntu'
           key: ${{ secrets.EC2_KEY }}
           script: |
             echo "🔁 STEP 1: Cleaning up previous deployment..."
             rm -rf Assignment
+
             echo "📦 STEP 2: Cloning the repository..."
             git clone https://github.com/hadiahmed1/Assignment_13_6_2025.git
+
             echo "📂 STEP 3: Navigating into the project directory..."
-            cd Assignment_13_6_2025
-            echo "📁 STEP 4: Ensuring Backend directory exists..."
-            mkdir -p Backend
+            cd Assignment
+
+            echo "📁 STEP 4: Creating necessary folders..."
+            mkdir -p Backend Frontend
+
             echo "🔐 STEP 5: Creating environment files..."
             echo "${{ secrets.ROOT_ENV }}" > .env
             echo "${{ secrets.BACKEND_ENV }}" > Backend/.env
             echo "${{ secrets.FRONTEND_ENV }}" > Frontend/.env
-            echo "🛑 STEP 6: Stopping any running containers..."
-            docker compose down
+
+            echo "🛑 STEP 6: Stopping existing containers..."
+            docker compose down || true
+
             echo "🚀 STEP 7: Building and starting containers..."
             docker compose up -d --build
-            echo "✅ Deployment finished successfully."
+
+            echo "✅ Deployment complete."
