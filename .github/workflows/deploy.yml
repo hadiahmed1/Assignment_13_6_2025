@@ -24,7 +24,7 @@ jobs:
             echo "📦 STEP 2: Cloning the repository..."
             git clone https://github.com/hadiahmed1/Assignment_13_6_2025.git
             echo "📂 STEP 3: Navigating into the project directory..."
-            cd Assignment
+            cd Assignment_13_6_2025
             echo "📁 STEP 4: Ensuring Backend directory exists..."
             mkdir -p Backend
             echo "🔐 STEP 5: Creating environment files..."
