@@ -79,25 +79,7 @@ export default function UserTable() {
 
   const [createdDateValue, setCreatedDateValue] = React.useState(dayjs());
 
-  // const [selectedOptions, setSelectedOptions] = useState([]);
-
   const options = ['Rohit Sharma', 'Karan Mehta', 'Shiv Roy', 'Amitabh Roy'];
-
-  // const allSelected = selectedOptions.length === options.length;
-  // const isIndeterminate =
-  //   selectedOptions.length > 0 && selectedOptions.length < options.length;
-
-  // const handleChange = (event, newValue) => {
-  //   if (newValue.includes('Select All')) {
-  //     if (allSelected) {
-  //       setSelectedOptions([]);
-  //     } else {
-  //       setSelectedOptions([...options]);
-  //     }
-  //   } else {
-  //     setSelectedOptions(newValue.filter(val => val !== 'Select All'));
-  //   }
-  // };
 
   const handlePopoverOpen = (event, index) => {
     setAnchorEl(event.currentTarget);
