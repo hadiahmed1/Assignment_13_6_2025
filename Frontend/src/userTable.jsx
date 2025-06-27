@@ -124,7 +124,7 @@ export default function UserTable() {
         <Table size='small'>
           <TableHead>
             <TableRow>
-              <TableCell><strong>Title</strong></TableCell>
+              <TableCell><strong>Movie Name</strong></TableCell>
               <TableCell><strong> ReleaseYear</strong></TableCell>
               <TableCell><strong>Length</strong></TableCell>
               <TableCell><strong>Rating</strong></TableCell>
