@@ -33,7 +33,6 @@ jobs:
             echo "${{ secrets.FRONTEND_ENV }}" > Frontend/.env
 
             docker compose down || true
-
             docker compose up -d --build
 
             echo "Deployment complete."
